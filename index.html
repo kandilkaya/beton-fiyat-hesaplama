@@ -60,10 +60,108 @@
             border-color: #3b82f6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
+        .btn-hesapla {
+            width: 100%;
+            padding: 14px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+        .btn-hesapla:hover {
+            background-color: #1d4ed8;
+        }
         .result-box {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, #1e293b, #0f172a);
             border-radius: 12px;
             padding: 20px;
             color: #ffffff;
             margin-top: 25px;
-            text-align:
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.2);
+        }
+        .result-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        .result-price {
+            font-size: 32px;
+            font-weight: 800;
+            color: #38bdf8;
+        }
+        .info-text {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Beton Fiyat Otomasyonu</h2>
+    
+    <div class="form-group">
+        <label for="betonSinifi">Beton Sınıfı</label>
+        <select id="betonSinifi">
+            <option value="2300">C20 / m³ (2.300 TL)</option>
+            <option value="2450">C25 / m³ (2.450 TL)</option>
+            <option value="2600" selected>C30 / m³ (2.600 TL)</option>
+            <option value="2800">C35 / m³ (2.800 TL)</option>
+            <option value="3100">C40 / m³ (3.100 TL)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="miktar">Miktar (m³)</label>
+        <input type="number" id="miktar" value="100" min="1">
+    </div>
+
+    <div class="form-group">
+        <label for="lojistik">Lojistik / Hizmet Türü</label>
+        <select id="lojistik">
+            <option value="0">Sadece Mikser (Mesafe Dahil)</option>
+            <option value="250">Pompalı Gönderim (+250 TL / m³)</option>
+        </select>
+    </div>
+
+    <button class="btn-hesapla" onclick="hesapla()">Hesapla</button>
+
+    <div class="result-box">
+        <div class="result-title">Tahmini Toplam Tutar</div>
+        <div class="result-price" id="toplamTutar">-- TL</div>
+        <div class="info-text">* Fiyatlara yasal KDV oranı dahil edilmemiştir.</div>
+    </div>
+</div>
+
+<script>
+    function hesapla() {
+        // Form verilerini alıyoruz
+        const birimFiyat = parseFloat(document.getElementById('betonSinifi').value);
+        const girilenMiktar = parseFloat(document.getElementById('miktar').value) || 0;
+        const lojistikFark = parseFloat(document.getElementById('lojistik').value);
+
+        // Excel eşitlemesi için katsayı (92/100)
+        const netMiktar = (girilenMiktar / 100) * 92;
+
+        // Hesaplama formülü
+        const toplam = (birimFiyat + lojistikFark) * netMiktar;
+
+        // Para birimini TL formatına çevirme
+        document.getElementById('toplamTutar').innerText = toplam.toLocaleString('tr-TR', {
+            style: 'currency',
+            currency: 'TRY'
+        });
+    }
+</script>
+
+</body>
+</html>
