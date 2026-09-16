@@ -105,7 +105,6 @@
 
     <div class="form-group">
         <label for="miktar">Miktar (m³)</label>
-        <!-- Buraya normalde 100 yazılsa bile arka planda 92 oranına göre hesaplayacaktır -->
         <input type="number" id="miktar" value="100" min="1" oninput="hesapla()">
     </div>
 
@@ -126,25 +125,26 @@
 
 <script>
     function hesapla() {
+        // Form verilerini alıyoruz
         const birimFiyat = parseFloat(document.getElementById('betonSinifi').value);
         const girilenMiktar = parseFloat(document.getElementById('miktar').value) || 0;
         const lojistikFark = parseFloat(document.getElementById('lojistik').value);
 
-        // Excel ile sitenin uyuşması için 92/100 oran katsayısı uyguluyoruz
-        const katsayi = 92 / 100; 
-        const duzeltilmisMiktar = girilenMiktar * katsayi;
+        // Excel dosyanızdaki 92 - 100 oran eşitlemesi
+        // Kullanıcı 100 girdiğinde arka planda 92 birim üzerinden işlem yapar
+        const netMiktar = (girilenMiktar / 100) * 92;
 
-        // Hesaplama algoritması (Düzeltilmiş miktar üzerinden)
-        const toplam = (birimFiyat + lojistikFark) * duzeltilmisMiktar;
+        // Hesaplama: (Beton m³ Fiyatı + Lojistik Farkı) * Dönüştürülmüş Excel Miktarı
+        const toplam = (birimFiyat + lojistikFark) * netMiktar;
 
-        // Para birimi formatlama (TL)
+        // Para birimini TL formatına çevirme
         document.getElementById('toplamTutar').innerText = toplam.toLocaleString('tr-TR', {
             style: 'currency',
             currency: 'TRY'
         });
     }
 
-    // Sayfa ilk yüklendiğinde otomatik hesaplama yapması için
+    // Sayfa açıldığında ilk hesaplamayı otomatik yap
     window.onload = hesapla;
 </script>
 
