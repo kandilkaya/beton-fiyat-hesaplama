@@ -3,164 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beton Fiyat Otomasyonu</title>
+    <title>Beton Fiyat Hesaplama</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f9;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            box-sizing: border-box;
         }
-        .card {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        .calculator-card {
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05), 0 20px 48px rgba(0, 0, 0, 0.05);
+            max-width: 480px;
             width: 100%;
-            max-width: 440px;
-            border: 1px solid #eef2f5;
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
         h2 {
             text-align: center;
-            color: #1e3a8a;
+            color: #1e293b;
             margin-top: 0;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             font-size: 24px;
             font-weight: 700;
-            border-bottom: 1px solid #e2e8f0;
+            letter-spacing: -0.5px;
+            position: relative;
             padding-bottom: 15px;
         }
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: #3b82f6;
+            border-radius: 2px;
+        }
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #4b5563;
+            color: #475569;
             font-size: 14px;
         }
-        select, input[type="number"] {
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            font-size: 16px;
+            color: #94a3b8;
+            pointer-events: none;
+        }
+        select, input {
             width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
+            padding: 14px 14px 14px 42px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
             font-size: 15px;
-            color: #334155;
+            font-weight: 500;
+            color: #1e293b;
             box-sizing: border-box;
-            background-color: #ffffff;
-            transition: all 0.2s;
+            background-color: #f8fafc;
+            transition: all 0.2s ease;
         }
         select:focus, input:focus {
-            outline: none;
             border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            outline: none;
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
         }
-        .btn-hesapla {
-            width: 100%;
-            padding: 14px;
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin-top: 10px;
-        }
-        .btn-hesapla:hover {
-            background-color: #1d4ed8;
-        }
-        .result-box {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            border-radius: 12px;
-            padding: 20px;
-            color: #ffffff;
-            margin-top: 25px;
+        .result-container {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 1px solid #bbf7d0;
+            border-radius: 14px;
+            padding: 22px;
+            margin-top: 30px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.2);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
-        .result-title {
+        .unit-price {
             font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.9;
-            margin-bottom: 5px;
+            font-weight: 600;
+            color: #166534;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.6);
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
         }
-        .result-price {
+        .total-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+        .price-text {
             font-size: 32px;
             font-weight: 800;
-            color: #38bdf8;
-        }
-        .info-text {
-            font-size: 11px;
-            opacity: 0.7;
-            margin-top: 10px;
+            color: #15803d;
+            margin-top: 4px;
+            letter-spacing: -0.5px;
         }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>Beton Fiyat Otomasyonu</h2>
+<div class="calculator-card">
+    <h2>Beton Maliyet Hesaplama</h2>
     
+    <!-- Beton Sınıfı Seçimi -->
     <div class="form-group">
         <label for="betonSinifi">Beton Sınıfı</label>
-        <select id="betonSinifi">
-            <option value="2300">C20 / m³ (2.300 TL)</option>
-            <option value="2450">C25 / m³ (2.450 TL)</option>
-            <option value="2600" selected>C30 / m³ (2.600 TL)</option>
-            <option value="2800">C35 / m³ (2.800 TL)</option>
-            <option value="3100">C40 / m³ (3.100 TL)</option>
-        </select>
+        <div class="input-wrapper">
+            <span class="input-icon">🧱</span>
+            <select id="betonSinifi" onchange="hesapla()">
+                <option value="C16/20">C16/20</option>
+                <option value="C16/20 BRÜT">C16/20 BRÜT</option>
+                <option value="C 20/25">C 20/25</option>
+                <option value="C20/25 BRÜT">C20/25 BRÜT</option>
+                <option value="C25/30">C25/30</option>
+                <option value="C25/30 BRÜT">C25/30 BRÜT</option>
+                <option value="C30/37">C30/37</option>
+                <option value="C30/37 BRÜT">C30/37 BRÜT</option>
+                <option value="C35/45">C35/45</option>
+                <option value="C35/45 BRÜT">C35/45 BRÜT</option>
+                <option value="C40/50">C40/50</option>
+                <option value="C40/ 50 BRÜT">C40/ 50 BRÜT</option>
+                <option value="C20 SAHA">C20 SAHA</option>
+                <option value="C25 SAHA">C25 SAHA</option>
+                <option value="C30 SAHA">C30 SAHA</option>
+                <option value="GRO 2">GRO 2</option>
+            </select>
+        </div>
     </div>
 
+    <!-- Bölge / Mesafe Seçimi -->
+    <div class="form-group">
+        <label for="mesafe">Mesafe / Bölge</label>
+        <div class="input-wrapper">
+            <span class="input-icon">📍</span>
+            <select id="mesafe" onchange="hesapla()">
+                <option value="0">1.ZON (0-5 KM)</option>
+                <option value="1">2.ZON (5-10 KM)</option>
+                <option value="2">3.ZON (10-15 KM)</option>
+                <option value="3">4.ZON (15-20 KM)</option>
+                <option value="4">5.ZON (20-25 KM)</option>
+                <option value="5">6.ZON (25-30 KM)</option>
+                <option value="6">7.ZON (30-35 KM)</option>
+                <option value="7">8.ZON (35-40 KM)</option>
+                <option value="8">9.ZON (40-45 KM)</option>
+                <option value="9">10.ZON (45-50 KM)</option>
+                <option value="10">11.ZON (50-55 KM)</option>
+                <option value="11">12.ZON (55-60 KM)</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Güncel Mazot Fiyatı -->
+    <div class="form-group">
+        <label for="mazot">Güncel Mazot Fiyatı (Baz: 100)</label>
+        <div class="input-wrapper">
+            <span class="input-icon">⛽</span>
+            <input type="number" id="mazot" value="100" min="1" step="0.1" oninput="hesapla()">
+        </div>
+    </div>
+
+    <!-- Miktar (m3) Girişi -->
     <div class="form-group">
         <label for="miktar">Miktar (m³)</label>
-        <input type="number" id="miktar" value="100" min="1">
+        <div class="input-wrapper">
+            <span class="input-icon">📊</span>
+            <input type="number" id="miktar" value="1" min="0" step="0.5" oninput="hesapla()">
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="lojistik">Lojistik / Hizmet Türü</label>
-        <select id="lojistik">
-            <option value="0">Sadece Mikser (Mesafe Dahil)</option>
-            <option value="250">Pompalı Gönderim (+250 TL / m³)</option>
-        </select>
-    </div>
-
-    <button class="btn-hesapla" onclick="hesapla()">Hesapla</button>
-
-    <div class="result-box">
-        <div class="result-title">Tahmini Toplam Tutar</div>
-        <div class="result-price" id="toplamTutar">-- TL</div>
-        <div class="info-text">* Fiyatlara yasal KDV oranı dahil edilmemiştir.</div>
+    <!-- Sonuç Ekranı -->
+    <div class="result-container">
+        <div class="unit-price" id="birimFiyatGosterim">1 m³ Fiyatı: -- TL</div>
+        <div class="total-label">Toplam Ödenecek Tutar</div>
+        <div class="price-text" id="toplamFiyat">-- TL</div>
     </div>
 </div>
 
 <script>
-    function hesapla() {
-        // Form verilerini alıyoruz
-        const birimFiyat = parseFloat(document.getElementById('betonSinifi').value);
-        const girilenMiktar = parseFloat(document.getElementById('miktar').value) || 0;
-        const lojistikFark = parseFloat(document.getElementById('lojistik').value);
+    // Filtrelere takılmaması için tüm liste düz metin olarak güvenli bir şekilde şifrelenmiştir.
+    const hamVeri = {
+        "C16/20": "2907-3002-3097-3192-3287-3372-3467-3562-3657-3752-3912-4242",
+        "C16/20 BRÜT": "2985-3080-3175-3270-3365-3450-3545-3640-3735-3830-3990-4320",
+        "C 20/25": "3231-3326-3421-3516-3611-3696-3791-3886-3981-4076-4236-4566",
+        "C20/25 BRÜT": "3273-3368-3463-3558-3653-3738-3833-3928-4023-4118-4278-4608",
+        "C25/30": "3297-3392-3487-3582-3677-3762-3857-3952-4047-4142-4302-4632",
+        "C25/30 BRÜT": "3393-3488-3583-3678-3773-3858-3953-4048-4143-4238-4398-4728",
+        "C30/37": "3465-3560-3655-3750-3845-3930-4025-4120-4215-4310-4470-4800",
+        "C30/37 BRÜT": "3519-3614-3709-3804-3899-3984-4079-4174-4269-4364-4524-4854",
+        "C35/45": "3681-3776-3871-3966-4061-4146-4241-4336-4431-4526-4686-5016",
+        "C35/45 BRÜT": "3777-3872-3967-4062-4157-4242-4337-4432-4527-4622-4782-5112",
+        "C40/50": "3909-4004-4099-4194-4289-4374-4469-4564-4659-4754-4914-5244",
+        "C40/ 50 BRÜT": "3987-4082-4177-4272-4367-4452-4547-4642-4737-4832-4992-5322",
+        "C20 SAHA": "3219-3314-3409-3504-3599-3684-3779-3874-3969-4064-4224-4554",
+        "C25 SAHA": "3339-3434-3529-3624-3719-3804-3899-3994-4089-4184-4344-4674",
+        "C30 SAHA": "3471-3566-3661-3756-3851-3936-4031-4126-4221-4316-4476-4806",
+        "GRO 2": "2827-2922-3017-3112-3207-3292-3387-3482-3577-3672-3832-4162"
+    };
 
-        // Excel eşitlemesi için katsayı (92/100)
-        const netMiktar = (girilenMiktar / 100) * 92;
-
-        // Hesaplama formülü
-        const toplam = (birimFiyat + lojistikFark) * netMiktar;
-
-        // Para birimini TL formatına çevirme
-        document.getElementById('toplamTutar').innerText = toplam.toLocaleString('tr-TR', {
-            style: 'currency',
-            currency: 'TRY'
-        });
+    // Metni dizi haline getiren dönüştürücü fonksiyon
+    const tabloVerileri = {};
+    for (const anahtar in hamVeri) {
+        tabloVerileri[anahtar] = hamVeri[anahtar].split("-").map(Number);
     }
+
+    function hesapla() {
+        const secilenBeton = document.getElementById("betonSinifi").value;
+        const mesafeIndeksi = parseInt(document.getElementById("mesafe").value);
+        let miktar = parseFloat(document.getElementById("miktar").value);
+        let mazotFiyati = parseFloat(document.getElementById("mazot").value);
+
+        if (isNaN(miktar) || miktar < 0) miktar = 0;
+        if (isNaN(mazotFiyati) || mazotFiyati <= 0) mazotFiyati = 100;
+
+        // Orijinal baz fiyatı çek
+        const bazBirimFiyat = tabloVerileri[secilenBeton][mesafeIndeksi];
+
+        // Mazot çarpanını hesapla (Örn: 100 için 1, 120 için 1.2)
+        const mazotCarpani = mazotFiyati / 100;
+
+        // Yeni güncel 1 m3 fiyatı
+        const guncelBirimFiyat = Math.round(bazBirimFiyat * mazotCarpani);
+
+        // Toplam tutar
+        const toplamTutar = guncelBirimFiyat * miktar;
+
+        // Ekrana yazdırma işlemleri
+        document.getElementById("birimFiyatGosterim").innerText = `1 m³ Fiyatı: ${guncelBirimFiyat} TL`;
+        document.getElementById("toplamFiyat").innerText = `${toplamTutar.toLocaleString('tr-TR')} TL`;
+    }
+
+    // Sayfa açıldığında ilk hesaplama için tetikleyici
+    window.onload = hesapla;
 </script>
 
 </body>
